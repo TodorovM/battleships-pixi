@@ -4,7 +4,7 @@ import config from "../config/config"
 
 export default class GameBoard extends Container {
 
-    constructor(x, y) {
+    constructor() {
         super();
         this._boards = {
             player: {
@@ -18,7 +18,6 @@ export default class GameBoard extends Container {
                 ships: []
             }
         };
-        this.position.set(x, y);
         this.init();
     }
 
