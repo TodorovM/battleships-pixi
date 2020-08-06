@@ -1,12 +1,16 @@
-const { classof } = require("core-js/fn/object");
-import { Container } from "pixi.js";
+import { Graphics } from "pixi.js";
+import config from "../../config/config"
 
-class Tile extends Container {
+export default class Tile extends Graphics {
 
-    constructor(x, y, occupied){
+    constructor(x, y, row, column){
         super();
-        this.position.set(x, y);
-        this.occupied = occupied;
+        this.lineStyle(2, 0xFFFFFF)
+        this._rect = this.drawRect(x, y, config.tile.width, config.tile.height);
+        this.interactive = true;
+        this.occupied = false;
+        this.hit = false;
+        this.boardPosition = {row, column}
     }
 
 }
