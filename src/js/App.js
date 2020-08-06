@@ -1,4 +1,6 @@
-import { Application } from 'pixi.js'
+import {
+    Application
+} from 'pixi.js'
 import config from './config/config'
 import GameBoard from "./modules/GameBoard";
 
@@ -8,8 +10,8 @@ export default class App extends Application {
             width: window.innerWidth,
             height: window.innerHeight,
             backgroundColor: config.colors.background,
-          });
-          this._gameBoard = new GameBoard();
+        });
+        this._gameBoard = new GameBoard();
     }
 
     init() {
@@ -20,10 +22,10 @@ export default class App extends Application {
     }
 
     _size() {
-        const scaleRatio = (window.innerHeight) / (this._gameBoard.height + 2 * config.board.paddingTop);
+        const scaleRatio = (window.innerHeight) / (this._gameBoard.height + 2 * config.board.padding);
         this.renderer.resize(window.innerWidth, window.innerHeight);
-        this._gameBoard.height *= scaleRatio; 
-        this._gameBoard.width *= scaleRatio; 
-        this._gameBoard.position.set((this.screen.width / 2) - (this._gameBoard.width / 2), config.board.paddingTop);
+        this._gameBoard.height *= scaleRatio;
+        this._gameBoard.width *= scaleRatio;
+        this._gameBoard.position.set((this.screen.width / 2) - (this._gameBoard.width / 2), config.board.padding);
     }
 }

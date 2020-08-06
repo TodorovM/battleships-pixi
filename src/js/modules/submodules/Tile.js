@@ -1,16 +1,43 @@
-import { Graphics } from "pixi.js";
+import {
+    Container,
+    Sprite
+} from "pixi.js";
 import config from "../../config/config"
+import assets from "../../config/assetsConfig"
 
-export default class Tile extends Graphics {
+export default class Tile extends Container {
 
-    constructor(x, y, row, column){
+    constructor(x, y, row, column) {
         super();
-        this.lineStyle(2, 0xFFFFFF)
-        this._rect = this.drawRect(x, y, config.tile.width, config.tile.height);
+        this.position.set(x, y);
         this.interactive = true;
         this.occupied = false;
         this.hit = false;
-        this.boardPosition = {row, column}
+        this.sprites = {
+            normal: Sprite.from(assets.tile.normal),
+            hit: Sprite.from(assets.tile.hit),
+            miss: Sprite.from(assets.tile.miss)
+        }
+        this.boardPosition = {
+            row,
+            column
+        }
+        this.addChild(this.sprites.normal);
+        Object.keys(this.sprites).forEach(sprite => {
+            this.sprites[sprite].width = config.tile.width;
+            this.sprites[sprite].height = config.tile.height;
+        })
+    }
+
+
+    checkTile() {
+        this.hit = true;
+        this.removeChild(this.sprites.normal)
+        if (this.occupied) {
+            this.addChild(this.sprites.hit)
+        } else {
+            this.addChild(this.sprites.miss)
+        }
     }
 
 }

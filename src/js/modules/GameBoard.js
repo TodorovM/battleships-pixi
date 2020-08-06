@@ -1,4 +1,6 @@
-import { Container } from "pixi.js"
+import {
+    Container
+} from "pixi.js"
 import Tile from "./submodules/Tile"
 import config from "../config/config"
 
@@ -21,32 +23,42 @@ export default class GameBoard extends Container {
         this.init();
     }
 
-    _createTiles(){
+    _createTiles() {
         for (let i = 0; i < 2; i++) {
             const board = i % 2 === 0 ? this._boards.computer.tiles : this._boards.player.tiles;
-            
+
             for (let row = 0; row < config.board.rows; row++) {
                 for (let col = 0; col < config.board.columns; col++) {
                     const tile = new Tile(row * config.tile.height, col * config.tile.width, row, col);
                     board.push(tile)
                 }
-                
+
             }
         }
     }
 
-    _drawBoards(){
+    _attachEventListeners() {
+        this._boards.computer.tiles.forEach(tile => {
+            tile.interactive = true;
+            tile.on('click', () => {
+                tile.checkTile();
+            })
+        })
+    }
+
+    _drawBoards() {
         this._createTiles();
+        this._attachEventListeners();
         for (let i = 0; i < 2; i++) {
             const name = i % 2 === 0 ? 'computer' : 'player';
             this._boards[name].board.name = name;
             this._boards[name].board.addChild(...this._boards[name].tiles);
-            this._boards[name].board.position.set(0, i * this._boards[name].board.height);
+            this._boards[name].board.position.set(0, i * (this._boards[name].board.height + config.board.space));
             this.addChild(this._boards[name].board);
         }
     }
 
-    init(){
+    init() {
         this._drawBoards();
     }
 

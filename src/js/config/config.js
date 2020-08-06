@@ -9,6 +9,7 @@ export default {
     board: {
         rows: 10,
         columns: 10,
-        paddingTop: 50,
+        padding: 50,
+        space: 20,
     }
 }
