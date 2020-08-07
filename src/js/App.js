@@ -1,6 +1,5 @@
 import {
-    Application,
-    utils
+    Application
 } from 'pixi.js'
 import config from './config/config'
 import GameBoard from "./modules/GameBoard";
@@ -17,7 +16,6 @@ export default class App extends Application {
         });
         this.gameBoard;
         this._players = ['player', 'computer']
-        this._currentTurn = this._players[0];
         this._counter = 0;
         document.body.appendChild(this.view);
     }
@@ -44,15 +42,15 @@ export default class App extends Application {
     /**
      * Start the game
      */
-    _gameOn(){
+    _gameOn() {
         this.gameBoard.emitter.on('turn_end', async e => {
             ++this._counter;
             const opponent = this._players.find(p => p !== e)
-            if(this.gameBoard.checkHitTiles(opponent)) {
+            if (this.gameBoard.checkHitTiles(opponent)) {
                 await this.gameBoard.showText(`${e} has won the game in ${this._counter} turns`, true);
                 this.stage.removeChildren();
                 this.init();
-            }else{
+            } else {
                 this.gameBoard.turn = opponent;
                 if (opponent === 'player') this.gameBoard.attachListeners()
                 else {
@@ -63,5 +61,5 @@ export default class App extends Application {
         })
     }
 
-  
+
 }

@@ -24,7 +24,7 @@ export default class Ship extends Container {
             this.sprites[sprite].width = config.tile.width;
             this.sprites[sprite].height = ship === 'destroyer' ? config.ship.destroyer * config.tile.height : config.ship.battleship * config.tile.height;
         })
-        this.sprites[ship].rotation = dir === 0 ? 0 : -1.5708 //sets the sprite to be horizontal or vertical
+        this.sprites[ship].rotation = dir === 0 ? 0 : config.utils.rotateCounterClockwise //sets the sprite to be horizontal or vertical
         this.x = x;
         this.y = dir === 0 ? y : y + config.tile.width //fixing the offset created by rotating
         this.addChild(this.sprites[ship]);

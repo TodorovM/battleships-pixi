@@ -20,5 +20,8 @@ export default {
     ship: {
         destroyer: 4,
         battleship: 5
+    },
+    utils: {
+        rotateCounterClockwise: -1.5708
     }
 }

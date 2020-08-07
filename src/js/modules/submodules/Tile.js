@@ -32,9 +32,9 @@ export default class Tile extends Container {
             column
         }
         this.addChild(this.sprites.normal);
-        Object.keys(this.sprites).forEach(sprite => {
-            this.sprites[sprite].width = config.tile.width;
-            this.sprites[sprite].height = config.tile.height;
+        Object.values(this.sprites).forEach(sprite => {
+            sprite.width = config.tile.width;
+            sprite.height = config.tile.height;
         })
     }
 
