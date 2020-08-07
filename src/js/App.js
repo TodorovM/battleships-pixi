@@ -5,6 +5,9 @@ import {
 import config from './config/config'
 import GameBoard from "./modules/GameBoard";
 
+/**
+ * The app controller
+ */
 export default class App extends Application {
     constructor() {
         super({
@@ -27,6 +30,9 @@ export default class App extends Application {
         this._gameOn();
     }
 
+    /**
+     * Resize the board according to the screen size
+     */
     _size() {
         const scaleRatio = (window.innerHeight) / (this.gameBoard.height + 2 * config.board.padding);
         this.renderer.resize(window.innerWidth, window.innerHeight);
@@ -35,6 +41,9 @@ export default class App extends Application {
         this.gameBoard.position.set((this.screen.width / 2) - (this.gameBoard.width / 2), config.board.padding);
     }
 
+    /**
+     * Start the game
+     */
     _gameOn(){
         this.gameBoard.emitter.on('turn_end', async e => {
             ++this._counter;

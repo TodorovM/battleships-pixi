@@ -6,6 +6,14 @@ import {
 import config from "../../config/config"
 import assets from "../../config/assetsConfig"
 
+/**
+ * Single Tile Instance
+ * @date 2020-08-07
+ * @param {Integer} x
+ * @param {Integer} y
+ * @param {Integer} row
+ * @param {Integer} column
+ */
 export default class Tile extends Container {
 
     constructor(x, y, row, column) {
@@ -31,6 +39,10 @@ export default class Tile extends Container {
     }
 
 
+    /**
+     * Check the tile when selecting it
+     * @returns {Promise}
+     */
     checkTile() {
         return new Promise((resolve) => {
             if (!this.hit) {
@@ -42,10 +54,10 @@ export default class Tile extends Container {
                     this.addChild(this.sprites.miss)
                 }
                 resolve();
-            }   
+            }
         })
-            
-        
+
+
     }
 
 }

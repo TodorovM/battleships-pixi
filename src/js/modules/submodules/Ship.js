@@ -5,6 +5,14 @@ import {
 import config from "../../config/config"
 import assets from "../../config/assetsConfig"
 
+/**
+ * Single Ship Instance
+ * @constructor
+ * @param {Integer} x
+ * @param {Integer} y
+ * @param {String} ship
+ * @param {Integer} dir
+ */
 export default class Ship extends Container {
     constructor(x, y, ship, dir){
         super();
@@ -16,9 +24,9 @@ export default class Ship extends Container {
             this.sprites[sprite].width = config.tile.width;
             this.sprites[sprite].height = ship === 'destroyer' ? config.ship.destroyer * config.tile.height : config.ship.battleship * config.tile.height;
         })
-        this.sprites[ship].rotation = dir === 0 ? 0 : -1.5708
+        this.sprites[ship].rotation = dir === 0 ? 0 : -1.5708 //sets the sprite to be horizontal or vertical
         this.x = x;
-        this.y = dir === 0 ? y : y + config.tile.width
+        this.y = dir === 0 ? y : y + config.tile.width //fixing the offset created by rotating
         this.addChild(this.sprites[ship]);
     }
 }

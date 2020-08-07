@@ -7,6 +7,9 @@ import Tile from "./submodules/Tile"
 import Ship from "./submodules/Ship"
 import config from "../config/config"
 
+/**
+ * Gameboard that contains all the tiles and ships
+ */
 export default class GameBoard extends Container {
 
     constructor() {
@@ -28,6 +31,9 @@ export default class GameBoard extends Container {
         this.init();
     }
 
+    /**
+     * Create tile objects and attach event listeners to them
+     */
     _createTiles() {
         for (let i = 0; i < 2; i++) {
             const board = i % 2 === 0 ? this._boards.computer.tiles : this._boards.player.tiles;
@@ -47,6 +53,9 @@ export default class GameBoard extends Container {
     }
 
 
+    /**
+     * Draw the boards
+     */
     _drawBoards() {
         this._createTiles();
         for (let i = 0; i < 2; i++) {
@@ -58,8 +67,13 @@ export default class GameBoard extends Container {
         }
     }
 
+    /**
+     * Creates a ship object and places it randomly on the board
+     * @param {String} ship
+     * @param {Object} board
+     */
     _placeShipRandom(ship, board){
-        const dir = Math.round(Math.random());
+        const dir = Math.round(Math.random()); //choose random direction
         const randRow = Math.floor(Math.random() * config.board.rows);
         const randCol = Math.floor(Math.random() * config.board.columns);
         const tiles = [];
@@ -68,7 +82,7 @@ export default class GameBoard extends Container {
             else tiles.push(board.tiles.find(r => r.boardPosition.row === randRow && r.boardPosition.column === randCol + i))
         }
 
-        if (tiles.some(t => !t) || tiles.some(t => t.occupied)) this._placeShipRandom(ship, board)
+        if (tiles.some(t => !t) || tiles.some(t => t.occupied)) this._placeShipRandom(ship, board) //check if selected cluster of tiles is occupied or out of bounds
         else {
             board.tiles.forEach(tile => {
                 if (tiles.includes(tile)) tile.occupied = true;
@@ -80,6 +94,9 @@ export default class GameBoard extends Container {
         }
     }
 
+    /**
+     * Adding ships to the boards
+     */
     _addShipsToBoard(){
         Object.values(this._boards).forEach(board => {
             config.board.ships.forEach(ship => {
@@ -88,6 +105,9 @@ export default class GameBoard extends Container {
         })
     }
 
+    /**
+     * Attach the event listeners for the computer tiles
+     */
     attachListeners() {
         this._boards.computer.tiles.forEach(tile => {
             tile.interactive = true;
@@ -97,35 +117,56 @@ export default class GameBoard extends Container {
         })
     }
 
+    /**
+     * Remove the event listeners for the computer tiles
+     */
+    removeListeners() {
+        this._boards.computer.tiles.forEach(tile => {
+            tile.off('click')
+        })
+    }
+    
+    /**
+     * Show text on screen
+     * @param {String} string
+     * @param {Boolean} over
+     * @returns {Promise}
+     */
     showText(string, over){
         return new Promise((resolve) => {
             const text = new Text(string, {fontFamily: 'Segoe UI', fontSize: 24, fontWeight: 900, fill: 0xFF000})
             over ? text.position.set(this.width / 2 - text.width / 2, this.height / 2 - text.height / 2) : text.position.set(this.width / 2 - text.width / 2, 0)
             this.addChild(text);
             setTimeout(() => {
-                this.removeChild(text);
+                this.removeChild(text); //remove the text after 1s
                 resolve();
             }, 1000)
         })
     }
 
-    removeListeners() {
-        this._boards.computer.tiles.forEach(tile => {
-            tile.off('click')
-        })
-    }
 
+    /**
+     * Emit event when tile is hit
+     * @param {Object} tile
+     * @param {String} user
+     */
     async hitTile(tile, user) {
         await tile.checkTile();
         this.emitter.emit('turn_end', user)
     }
 
+    /**
+     * Hide or show enemy ships on the board
+     */
     toggleEnemyShips() {
         this._boards.computer.ships.forEach(ship => {
             ship.alpha = ship.alpha === 1 ? 0 : 1
         })
     }
 
+    /**
+     * Select a random tile for the computer
+     */
     opponentTurn() {
         const randRow = Math.floor(Math.random() * config.board.rows);
         const randCol = Math.floor(Math.random() * config.board.columns);
@@ -135,6 +176,11 @@ export default class GameBoard extends Container {
         
     }
 
+    /**
+     * Check if ship is sunk or all ships are sunk on the board
+     * @param {String} user
+     * @returns {Boolean}
+     */
     checkHitTiles(user) {
         const sunkenShip = this._boards[user].ships.find(s => s.tiles.every(t => t.hit))
         if (sunkenShip) {
