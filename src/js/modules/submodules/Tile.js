@@ -1,6 +1,7 @@
 import {
     Container,
-    Sprite
+    Sprite,
+    utils
 } from "pixi.js";
 import config from "../../config/config"
 import assets from "../../config/assetsConfig"
@@ -41,8 +42,9 @@ export default class Tile extends Container {
                     this.addChild(this.sprites.miss)
                 }
                 resolve();
-            }
+            }   
         })
+            
         
     }
 

@@ -1,10 +1,10 @@
 import {
-    Container
+    Container,
+    utils
 } from "pixi.js"
 import Tile from "./submodules/Tile"
 import Ship from "./submodules/Ship"
 import config from "../config/config"
-import { Math } from "core-js";
 
 export default class GameBoard extends Container {
 
@@ -22,6 +22,7 @@ export default class GameBoard extends Container {
                 ships: [],
             }
         };
+        this.emitter = new utils.EventEmitter();
         this.init();
     }
 
@@ -41,9 +42,14 @@ export default class GameBoard extends Container {
         this._boards.computer.tiles.forEach(tile => {
             tile.interactive = true;
             tile.on('click', () => {
-                tile.checkTile();
+                this.hitTile(tile, 'player');
             })
         })
+    }
+
+    async hitTile(tile, user) {
+        await tile.checkTile();
+        this.emitter.emit('turn_end', user)
     }
 
     _drawBoards() {
@@ -72,17 +78,17 @@ export default class GameBoard extends Container {
             board.tiles.forEach(tile => {
                 if (tiles.includes(tile)) tile.occupied = true;
             })
-            console.log(randRow)
             const sprite = new Ship(randCol * config.tile.height, randRow * config.tile.width, ship, dir)
+            sprite.tiles = tiles;
             board.ships.push(sprite);
             board.board.addChild(sprite);
         }
     }
 
-    _addShipsToBoard(){
+    async _addShipsToBoard(){
         Object.values(this._boards).forEach(board => {
             config.board.ships.forEach(ship => {
-               this._placeShipRandom(ship, board)
+                this._placeShipRandom(ship, board);
             })
         })
     }
@@ -93,10 +99,22 @@ export default class GameBoard extends Container {
         })
     }
 
+    checkHitTiles(user) {
+        const sunkenShip = this._boards[user].ships.find(s => s.tiles.every(t => t.hit))
+        if (sunkenShip) {
+            this._boards[user].board.removeChild(sunkenShip);
+            this._boards[user].ships = this._boards[user].ships.filter(s => s !== sunkenShip)
+        }
+        const occupied = this._boards[user].tiles.filter(t => t.occupied && !t.hit)
+        if (occupied.length === 0 ) return true
+        else return false
+    }
+
     init() {
         this._drawBoards();
         this._addShipsToBoard();
         this.toggleEnemyShips();
+        console.log(this._boards.computer.ships[0].tiles)
     }
 
     
