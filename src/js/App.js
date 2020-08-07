@@ -38,6 +38,13 @@ export default class App extends Application {
             const opponent = this._players.find(p => p !== e)
             if(this.gameBoard.checkHitTiles(opponent)) {
                 console.log(e)
+            }else{
+                this.gameBoard.turn = opponent;
+                if (opponent === 'player') this.gameBoard.attachListeners()
+                else {
+                    this.gameBoard.removeListeners();
+                    this.gameBoard.opponentTurn();
+                }
             }
         })
     }

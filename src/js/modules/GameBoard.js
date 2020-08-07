@@ -23,6 +23,7 @@ export default class GameBoard extends Container {
             }
         };
         this.emitter = new utils.EventEmitter();
+        this.turn = 'player';
         this.init();
     }
 
@@ -39,11 +40,23 @@ export default class GameBoard extends Container {
             }
         }
 
+        this.attachListeners();
+
+        
+    }
+
+    attachListeners() {
         this._boards.computer.tiles.forEach(tile => {
             tile.interactive = true;
             tile.on('click', () => {
                 this.hitTile(tile, 'player');
             })
+        })
+    }
+
+    removeListeners() {
+        this._boards.computer.tiles.forEach(tile => {
+            tile.off('click')
         })
     }
 
@@ -85,7 +98,7 @@ export default class GameBoard extends Container {
         }
     }
 
-    async _addShipsToBoard(){
+    _addShipsToBoard(){
         Object.values(this._boards).forEach(board => {
             config.board.ships.forEach(ship => {
                 this._placeShipRandom(ship, board);
@@ -97,6 +110,15 @@ export default class GameBoard extends Container {
         this._boards.computer.ships.forEach(ship => {
             ship.alpha = ship.alpha === 1 ? 0 : 1
         })
+    }
+
+    opponentTurn() {
+        const randRow = Math.floor(Math.random() * config.board.rows);
+        const randCol = Math.floor(Math.random() * config.board.columns);
+        const randTile = this._boards.player.tiles.find(t => t.boardPosition.column === randCol && t.boardPosition.row === randRow)
+        if (randTile.hit) this.opponentTurn();
+        else setTimeout(() => this.hitTile(randTile, 'computer'), 500)
+        
     }
 
     checkHitTiles(user) {
@@ -114,7 +136,6 @@ export default class GameBoard extends Container {
         this._drawBoards();
         this._addShipsToBoard();
         this.toggleEnemyShips();
-        console.log(this._boards.computer.ships[0].tiles)
     }
 
     
