@@ -11,5 +11,14 @@ export default {
         columns: 10,
         padding: 50,
         space: 20,
+        ships: [
+            'destroyer',
+            'destroyer',
+            'battleship'
+        ]
+    },
+    ship: {
+        destroyer: 4,
+        battleship: 5
     }
 }

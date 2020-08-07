@@ -11,21 +11,23 @@ export default class App extends Application {
             height: window.innerHeight,
             backgroundColor: config.colors.background,
         });
-        this._gameBoard = new GameBoard();
+        this.gameBoard = new GameBoard();
     }
 
     init() {
         document.body.appendChild(this.view);
-        this.stage.addChild(this._gameBoard);
+        this.stage.addChild(this.gameBoard);
         this._size();
         window.onresize = () => this._size();
     }
 
     _size() {
-        const scaleRatio = (window.innerHeight) / (this._gameBoard.height + 2 * config.board.padding);
+        const scaleRatio = (window.innerHeight) / (this.gameBoard.height + 2 * config.board.padding);
         this.renderer.resize(window.innerWidth, window.innerHeight);
-        this._gameBoard.height *= scaleRatio;
-        this._gameBoard.width *= scaleRatio;
-        this._gameBoard.position.set((this.screen.width / 2) - (this._gameBoard.width / 2), config.board.padding);
+        this.gameBoard.height *= scaleRatio;
+        this.gameBoard.width *= scaleRatio;
+        this.gameBoard.position.set((this.screen.width / 2) - (this.gameBoard.width / 2), config.board.padding);
     }
+
+  
 }

@@ -31,13 +31,19 @@ export default class Tile extends Container {
 
 
     checkTile() {
-        this.hit = true;
-        this.removeChild(this.sprites.normal)
-        if (this.occupied) {
-            this.addChild(this.sprites.hit)
-        } else {
-            this.addChild(this.sprites.miss)
-        }
+        return new Promise((resolve) => {
+            if (!this.hit) {
+                this.hit = true;
+                this.removeChild(this.sprites.normal)
+                if (this.occupied) {
+                    this.addChild(this.sprites.hit)
+                } else {
+                    this.addChild(this.sprites.miss)
+                }
+                resolve();
+            }
+        })
+        
     }
 
 }
