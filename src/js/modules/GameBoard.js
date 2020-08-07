@@ -1,6 +1,7 @@
 import {
     Container,
-    utils
+    utils, 
+    Text
 } from "pixi.js"
 import Tile from "./submodules/Tile"
 import Ship from "./submodules/Ship"
@@ -45,25 +46,6 @@ export default class GameBoard extends Container {
         
     }
 
-    attachListeners() {
-        this._boards.computer.tiles.forEach(tile => {
-            tile.interactive = true;
-            tile.on('click', () => {
-                this.hitTile(tile, 'player');
-            })
-        })
-    }
-
-    removeListeners() {
-        this._boards.computer.tiles.forEach(tile => {
-            tile.off('click')
-        })
-    }
-
-    async hitTile(tile, user) {
-        await tile.checkTile();
-        this.emitter.emit('turn_end', user)
-    }
 
     _drawBoards() {
         this._createTiles();
@@ -106,6 +88,38 @@ export default class GameBoard extends Container {
         })
     }
 
+    attachListeners() {
+        this._boards.computer.tiles.forEach(tile => {
+            tile.interactive = true;
+            tile.on('click', () => {
+                this.hitTile(tile, 'player');
+            })
+        })
+    }
+
+    showText(string, over){
+        return new Promise((resolve) => {
+            const text = new Text(string, {fontFamily: 'Segoe UI', fontSize: 24, fontWeight: 900, fill: 0xFF000})
+            over ? text.position.set(this.width / 2 - text.width / 2, this.height / 2 - text.height / 2) : text.position.set(this.width / 2 - text.width / 2, 0)
+            this.addChild(text);
+            setTimeout(() => {
+                this.removeChild(text);
+                resolve();
+            }, 1000)
+        })
+    }
+
+    removeListeners() {
+        this._boards.computer.tiles.forEach(tile => {
+            tile.off('click')
+        })
+    }
+
+    async hitTile(tile, user) {
+        await tile.checkTile();
+        this.emitter.emit('turn_end', user)
+    }
+
     toggleEnemyShips() {
         this._boards.computer.ships.forEach(ship => {
             ship.alpha = ship.alpha === 1 ? 0 : 1
@@ -126,6 +140,7 @@ export default class GameBoard extends Container {
         if (sunkenShip) {
             this._boards[user].board.removeChild(sunkenShip);
             this._boards[user].ships = this._boards[user].ships.filter(s => s !== sunkenShip)
+            this.showText(`1 of ${user}'s ships was sunk`);
         }
         const occupied = this._boards[user].tiles.filter(t => t.occupied && !t.hit)
         if (occupied.length === 0 ) return true

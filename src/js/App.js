@@ -12,13 +12,15 @@ export default class App extends Application {
             height: window.innerHeight,
             backgroundColor: config.colors.background,
         });
-        this.gameBoard = new GameBoard();
+        this.gameBoard;
         this._players = ['player', 'computer']
         this._currentTurn = this._players[0];
+        this._counter = 0;
+        document.body.appendChild(this.view);
     }
 
     init() {
-        document.body.appendChild(this.view);
+        this.gameBoard = new GameBoard();
         this.stage.addChild(this.gameBoard);
         this._size();
         window.onresize = () => this._size();
@@ -34,10 +36,13 @@ export default class App extends Application {
     }
 
     _gameOn(){
-        this.gameBoard.emitter.on('turn_end', e => {
+        this.gameBoard.emitter.on('turn_end', async e => {
+            ++this._counter;
             const opponent = this._players.find(p => p !== e)
             if(this.gameBoard.checkHitTiles(opponent)) {
-                console.log(e)
+                await this.gameBoard.showText(`${e} has won the game in ${this._counter} turns`, true);
+                this.stage.removeChildren();
+                this.init();
             }else{
                 this.gameBoard.turn = opponent;
                 if (opponent === 'player') this.gameBoard.attachListeners()
